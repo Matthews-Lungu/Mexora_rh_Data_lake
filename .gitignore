@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.venv/
+
+# Data Lake (large generated files — don't commit to Git)
+data_lake/bronze/
+data_lake/silver/
+data_lake/gold/
+
+# Raw data files
+data_generation/*.json
+data_generation/*.csv
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
