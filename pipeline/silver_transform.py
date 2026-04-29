@@ -354,6 +354,15 @@ def transformer_silver(offres_brutes: list) -> tuple[pd.DataFrame, pd.DataFrame]
             'salaire_min_mad':     sal_min,
             'salaire_max_mad':     sal_max,
             'salaire_devise':      sal_devise,
+            'salaire_devise':      sal_devise,
+
+# Derived — required by Step 3 Query 4
+'salaire_median_mad':  (
+    round((sal_min + sal_max) / 2)
+    if sal_min is not None and sal_max is not None
+    else (sal_min if sal_min is not None else sal_max)
+),
+'salaire_connu':       sal_min is not None,
 
             # Parsed experience
             'experience_originale': exp_raw,
@@ -382,6 +391,13 @@ def transformer_silver(offres_brutes: list) -> tuple[pd.DataFrame, pd.DataFrame]
             ),
 
             # Data quality
+            # Derived salary columns required by Step 3 Query 4
+'salaire_median_mad': (
+    round((sal_min + sal_max) / 2)
+    if sal_min is not None and sal_max is not None
+    else (sal_min or sal_max)
+),
+'salaire_connu': sal_min is not None,
             'nb_anomalies':        len(qualite['anomalies']),
             'anomalies':           ', '.join(qualite['anomalies']),
         }
