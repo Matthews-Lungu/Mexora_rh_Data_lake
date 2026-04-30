@@ -2,7 +2,7 @@
 ## Step 2: Data Engineering Pipeline Documentation
 
 **Project:** Mexora RH Intelligence — IT Job Market Analysis, Morocco  
-**Author:** Data Engineering Team  
+**Author:** Mathew Lungu & Adjii Charles  
 **Date:** April 2026  
 **Pipeline Version:** 1.0  
 
@@ -10,7 +10,7 @@
 
 ## 1. Overview
 
-This report documents the complete data engineering pipeline built for the Mexora RH Intelligence project. The pipeline processes 5,000 Moroccan IT job offers from three sources (Rekrute, MarocAnnonce, LinkedIn) through a Bronze/Silver/Gold Data Lake architecture, producing five analytical Gold tables used for HR decision-making.
+This report documents the complete data engineering pipeline built for the Mexora HR Intelligence project. The pipeline processes 5,000 Moroccan IT job offers from three sources (Rekrute, MarocAnnonce, LinkedIn) through a Bronze/Silver/Gold Data Lake architecture, producing five analytical Gold tables used for HR decision-making.
 
 **Pipeline execution time:** 81.9 seconds end-to-end  
 **Total records processed:** 5,000 job offers  
