@@ -421,23 +421,52 @@ for _, r in q5b.iterrows():
 # Chart Q5
 fig, axes = plt.subplots(1, 2, figsize=(16, 7))
 q5_t = q5a.head(15).sort_values('nb_offres_publiees')
-axes[0].barh(q5_t['entreprise'], q5_t['nb_offres_publiees'], color=COULEURS[0])
+
+# ── Left chart: colour bars by salary level + proper legend ──────────────────
+HIGH_SAL = COULEURS[3]   # orange-red  → Sal.Moy > 16k
+LOW_SAL  = COULEURS[2]   # light blue  → Sal.Moy ≤ 16k
+bar_colors = []
+for _, r in q5_t.iterrows():
+    sal = r['salaire_moyen_propose']
+    bar_colors.append(HIGH_SAL if pd.notna(sal) and sal > 16000 else LOW_SAL)
+
+bars = axes[0].barh(q5_t['entreprise'], q5_t['nb_offres_publiees'], color=bar_colors)
 axes[0].set_xlabel("Nombre d'offres publiées")
 axes[0].set_title("Top 15 Recruteurs IT au Maroc")
 for bar, val in zip(axes[0].patches, q5_t['nb_offres_publiees']):
     axes[0].text(val + 0.3, bar.get_y() + bar.get_height()/2,
                  str(int(val)), va='center', fontsize=9)
+
+# Explicit legend patches for the bar chart
+import matplotlib.patches as mpatches
+axes[0].legend(
+    handles=[
+        mpatches.Patch(color=HIGH_SAL, label='Sal.Moy > 16k'),
+        mpatches.Patch(color=LOW_SAL,  label='Sal.Moy ≤ 16k'),
+    ],
+    fontsize=9, loc='lower right'
+)
+
+# ── Right chart: scatter with labelled legend per competition level ───────────
 q5b_c = q5b.dropna(subset=['salaire_moyen_propose'])
-cmap  = {'Compétiteur fort': COULEURS[3],
-         'Compétiteur moyen': COULEURS[4],
+cmap  = {'Compétiteur fort':   COULEURS[3],
+         'Compétiteur moyen':  COULEURS[4],
          'Compétiteur faible': COULEURS[2]}
-for _, r in q5b_c.iterrows():
-    c = cmap.get(r['niveau_competition'], COULEURS[0])
-    axes[1].scatter(r['salaire_moyen_propose'], r['nb_offres_publiees'],
-                    color=c, s=120, zorder=5)
-    axes[1].annotate(r['entreprise'],
-                     (r['salaire_moyen_propose'], r['nb_offres_publiees']),
-                     fontsize=8, xytext=(5, 3), textcoords='offset points')
+label_map = {'Compétiteur fort':   'Fort',
+             'Compétiteur moyen':  'Moyen',
+             'Compétiteur faible': 'Faible'}
+
+# Plot one scatter call per competition level so legend entries are correct
+for niveau, color in cmap.items():
+    subset = q5b_c[q5b_c['niveau_competition'] == niveau]
+    if not subset.empty:
+        axes[1].scatter(subset['salaire_moyen_propose'], subset['nb_offres_publiees'],
+                        color=color, s=120, zorder=5, label=label_map[niveau])
+    for _, r in subset.iterrows():
+        axes[1].annotate(r['entreprise'],
+                         (r['salaire_moyen_propose'], r['nb_offres_publiees']),
+                         fontsize=8, xytext=(5, 3), textcoords='offset points')
+
 axes[1].axvline(x=12000, color='gray', linestyle='--', alpha=0.5)
 axes[1].axvline(x=20000, color='gray', linestyle=':', alpha=0.5)
 axes[1].scatter(19000, 5, color='black', s=200, marker='*',
